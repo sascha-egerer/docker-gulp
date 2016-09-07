@@ -1,0 +1,21 @@
+FROM node:4.4
+MAINTAINER Sascha Egerer <s.egerer@syzygy.de>
+
+EXPOSE 3000
+
+COPY Private/Build/Docker/Styleguide/entrypoint.sh /entrypoint.sh
+COPY Private/package.json /frontend/Private/
+
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /frontend/Private
+
+RUN npm install && \
+    npm install phantomjs-prebuilt
+
+# add the node module bin path to $PATH
+ENV PATH /frontend/Private/node_modules/.bin/:$PATH
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["gulp", "styleguide"]
